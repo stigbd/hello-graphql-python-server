@@ -1,0 +1,68 @@
+[project]
+name = "hello-graphql-python-server"
+version = "0.1.0"
+description = "Add your description here"
+authors = [{ name = "Stig B. Dørmænen", email = "stigbd@gmail.com" }]
+dependencies = [
+    "strawberry-graphql[debug-server]~=0.246.1",
+    "fastapi[standard]~=0.115.2",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+license = "MIT"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.rye]
+managed = true
+dev-dependencies = ["pyright~=1.1.384"]
+
+[tool.ruff]
+# if this is a library, enter the _minimum_ version you
+# want to support, otherwise do py312
+target-version = "py312"
+line-length = 120        # use whatever number makes you happy
+
+[tool.ruff.lint]
+# you can see the looong list of rules here:
+# https://docs.astral.sh/ruff/rules/
+# here's a couple to start with
+# select = [
+# 	"A",    # warn about shadowing built-ins
+# 	"E",    # style stuff, whitespaces
+# 	"F",    # important pyflakes lints
+# 	"I",    # import sorting
+# 	"N",    # naming
+# 	"T100", # breakpoints (probably don't want these in prod!)
+# ]
+# if you're feeling confident you can do:
+select = ["ALL"]
+# and then manually ignore annoying ones:
+ignore = [
+    "ANN401", # Any should be allowed
+    "D211",
+    "D213",
+    "COM812",
+    "D203",
+    "ISC001",
+]
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+"tests/**/*.py" = [
+    # at least this three should be fine in tests:
+    "S101", # asserts allowed in tests...
+    "ARG",  # Unused function args -> fixtures nevertheless are functionally relevant...
+    "FBT",  # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.rye.scripts]
+fmt = "rye fmt"
+lint = "rye lint --fix"
+check = "pyright"
+all = { chain = ["fmt", "lint", "check"] }
